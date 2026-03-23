@@ -1,0 +1,2332 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 98 - EGH-FILES [ENHANCED]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: black;
+            font-family: 'Courier New', Courier, monospace;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* BOOTSCREEN */
+        .boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 30px;
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .boot-content {
+            max-width: 600px;
+            width: 100%;
+            background: black;
+            border: 2px solid #0f0;
+            padding: 30px;
+            box-shadow: 0 0 20px #0f0;
+        }
+
+        .boot-line {
+            margin: 5px 0;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .boot-blink {
+            animation: bootCursor 1s step-end infinite;
+            display: inline-block;
+            width: 10px;
+        }
+
+        @keyframes bootCursor {
+            50% { opacity: 0; }
+        }
+
+        /* DESKTOP */
+        .desktop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #008080;
+            display: none;
+            z-index: 1000;
+        }
+
+        /* DESKTOP ICONS */
+        .desktop-icons {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: fit-content;
+        }
+
+        .desktop-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .desktop-icon:hover {
+            background: #000080;
+            border: 1px dotted white;
+        }
+
+        .desktop-icon .icon {
+            font-size: 42px;
+            line-height: 1;
+            filter: drop-shadow(2px 2px 0 #000);
+        }
+
+        .desktop-icon span {
+            background: #c0c0c0;
+            color: black;
+            padding: 2px 5px;
+            margin-top: 5px;
+            border: 2px outset white;
+            width: 100%;
+            font-size: 11px;
+        }
+
+        /* STARTMENU */
+        .start-menu {
+            position: fixed;
+            bottom: 40px;
+            left: 5px;
+            width: 250px;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #ffffff #404040 #404040 #ffffff;
+            padding: 3px;
+            display: none;
+            z-index: 10000;
+        }
+
+        .start-menu-header {
+            background: #000080;
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .start-menu-item {
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .start-menu-item:hover {
+            background: #000080;
+            color: white;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+        }
+
+        .start-menu-divider {
+            height: 2px;
+            background: #808080;
+            margin: 5px 0;
+            border-top: 1px solid #ffffff;
+            border-bottom: 1px solid #404040;
+        }
+
+        /* EGH-FILES FENSTER - VOLLBILD */
+        .egh-window {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 40px);
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 5000;
+        }
+
+        /* ORDNER-INHALT FENSTER */
+        .folder-content-window {
+            position: fixed;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 6000;
+            width: 700px;
+            height: 500px;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        /* BILD-ANSICHT FENSTER */
+        .image-view-window {
+            position: fixed;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 7000;
+            width: 600px;
+            height: 500px;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        /* ARBEITSPLATZ FENSTER */
+        .computer-window {
+            position: fixed;
+            top: 70px;
+            left: 80px;
+            width: 650px;
+            height: 450px;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 5002;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        /* PAPIERKORB FENSTER */
+        .recycle-window {
+            position: fixed;
+            top: 100px;
+            left: 120px;
+            width: 600px;
+            height: 400px;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 5001;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        /* NOTIZ FENSTER */
+        .note-window {
+            position: fixed;
+            top: 150px;
+            left: 200px;
+            width: 500px;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 6000;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        /* TIMER FENSTER */
+        .timer-window {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            background: #000000;
+            border: 6px solid;
+            border-color: #ff0000 #800000 #800000 #ff0000;
+            padding: 3px;
+            display: none;
+            z-index: 7000;
+            box-shadow: 0 0 30px #ff0000;
+        }
+
+        /* RIP DATEI FENSTER */
+        .rip-file-window {
+            position: fixed;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 8000;
+            width: 450px;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        /* NEUE FEATURE-FENSTER */
+        .search-window {
+            position: fixed;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 8500;
+            width: 500px;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        .history-window {
+            position: fixed;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 8500;
+            width: 450px;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        .stats-window {
+            position: fixed;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 8500;
+            width: 400px;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        .encryptor-window {
+            position: fixed;
+            background: #c0c0c0;
+            border: 4px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+            padding: 3px;
+            display: none;
+            z-index: 8600;
+            width: 500px;
+            box-shadow: 10px 10px 0 #00000080;
+        }
+
+        .timer-title {
+            background: #ff0000;
+            color: black;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid;
+            border-color: #ff8888 #800000 #800000 #ff8888;
+        }
+
+        .timer-content {
+            background: black;
+            color: #ff0000;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid;
+            border-color: #800000 #ff0000 #ff0000 #800000;
+        }
+
+        .timer-display {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+            font-family: 'Courier New';
+            text-shadow: 0 0 10px #ff0000;
+            animation: timerPulse 1s infinite;
+        }
+
+        @keyframes timerPulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .timer-date {
+            font-size: 24px;
+            margin: 10px 0;
+            color: #ffff00;
+        }
+
+        .window-title {
+            background: #000080;
+            color: white;
+            padding: 8px 12px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid;
+            border-color: #c0c0c0 #404040 #404040 #c0c0c0;
+            cursor: move;
+        }
+
+        .window-title button {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 4px 10px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .window-title button:active {
+            border-color: #808080 #ffffff #ffffff #808080;
+        }
+
+        .window-content {
+            background: #c0c0c0;
+            padding: 15px;
+            border: 2px solid;
+            border-color: #dfdfdf #808080 #808080 #dfdfdf;
+            height: calc(100% - 50px);
+            overflow-y: auto;
+        }
+
+        .egh-title {
+            background: #000080;
+            color: white;
+            padding: 8px 12px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid;
+            border-color: #c0c0c0 #404040 #404040 #c0c0c0;
+        }
+
+        .egh-title button {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 4px 12px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .egh-title button:active {
+            border-color: #808080 #ffffff #ffffff #808080;
+        }
+
+        .egh-content {
+            background: #c0c0c0;
+            padding: 15px;
+            border: 2px solid;
+            border-color: #dfdfdf #808080 #808080 #dfdfdf;
+            height: calc(100% - 60px);
+            overflow-y: auto;
+        }
+
+        /* PATH BAR */
+        .path-bar {
+            background: #ffffff;
+            border: 3px inset #808080;
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .drive {
+            background: #d0d0d0;
+            border: 2px outset #ffffff;
+            padding: 4px 10px;
+        }
+
+        /* FOLDER GRID */
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            background: #a0a0a0;
+            padding: 15px;
+            border: 3px inset #808080;
+            min-height: 300px;
+        }
+
+        .folder-item {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 15px 8px 8px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .folder-item:active {
+            border-color: #808080 #ffffff #ffffff #808080;
+        }
+
+        .folder-item.locked {
+            background: #a0a0a0;
+        }
+
+        .folder-item.unlocked {
+            background: #c0c0c0;
+            border-color: #ffff00 #808080 #808080 #ffff00;
+        }
+
+        .folder-icon {
+            font-size: 48px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .folder-name {
+            background: white;
+            border: 2px inset #808080;
+            padding: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #000080;
+            word-break: break-word;
+        }
+
+        .lock-icon {
+            background: #ff0000;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            margin-top: 5px;
+            display: inline-block;
+            border: 2px outset #ff8888;
+        }
+
+        .unlock-icon {
+            background: #00ff00;
+            color: black;
+            font-size: 10px;
+            padding: 2px 6px;
+            margin-top: 5px;
+            display: inline-block;
+            border: 2px outset #88ff88;
+        }
+
+        /* DATEI GRID */
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            background: #a0a0a0;
+            padding: 15px;
+            border: 3px inset #808080;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .file-item:hover {
+            background: #d0d0d0;
+        }
+
+        .file-item:active {
+            border-color: #808080 #ffffff #ffffff #808080;
+        }
+
+        .file-icon {
+            font-size: 32px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .file-meta {
+            font-size: 10px;
+            color: #404040;
+        }
+
+        /* BILD ANSICHT */
+        .image-container {
+            background: #000;
+            padding: 10px;
+            border: 3px inset #808080;
+            text-align: center;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 330px;
+            border: 2px solid #c0c0c0;
+            cursor: pointer;
+        }
+
+        .video-container {
+            background: #000;
+            padding: 10px;
+            border: 3px inset #808080;
+            text-align: center;
+        }
+
+        .video-container video {
+            max-width: 100%;
+            max-height: 300px;
+            border: 2px solid #c0c0c0;
+        }
+
+        .download-hint {
+            background: #ffffcc;
+            border: 2px solid #000080;
+            padding: 5px;
+            margin-top: 10px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* RIP CONTENT */
+        .rip-file-content {
+            background: black;
+            color: #ff0000;
+            padding: 30px;
+            text-align: center;
+            font-family: 'Courier New';
+            border: 2px inset #808080;
+            min-height: 200px;
+        }
+
+        .rip-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .rip-divider {
+            margin: 15px 0;
+            border-top: 2px dashed #ff0000;
+        }
+
+        .rip-text {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .note-content {
+            background: #ffffcc;
+            color: #000000;
+            padding: 25px;
+            border: 3px inset #808080;
+            font-family: 'Courier New';
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .status-bar {
+            background: #d0d0d0;
+            border: 3px inset #808080;
+            padding: 8px 12px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .info-line {
+            background: #808080;
+            border: 3px inset #a0a0a0;
+            margin-top: 10px;
+            padding: 8px 12px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .admin-badge {
+            background: black;
+            color: #ff0000;
+            padding: 4px 12px;
+            font-weight: bold;
+            border: 2px inset #404040;
+        }
+
+        .bill-badge {
+            background: black;
+            color: #ffff00;
+            padding: 4px 12px;
+            font-weight: bold;
+            border: 2px solid #ffff00;
+            text-shadow: 0 0 5px #ffff00;
+            animation: billGlow 2s infinite;
+        }
+
+        @keyframes billGlow {
+            0% { box-shadow: 0 0 5px #ffff00; }
+            50% { box-shadow: 0 0 20px #ffff00; }
+            100% { box-shadow: 0 0 5px #ffff00; }
+        }
+
+        /* TASKBAR */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: #c0c0c0;
+            border-top: 3px solid #ffffff;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+            z-index: 9000;
+        }
+
+        .start-button {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 5px 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .start-button.active {
+            border-color: #808080 #ffffff #ffffff #808080;
+        }
+
+        .taskbar-item {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 5px 15px;
+            margin-left: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .taskbar-item.highlight {
+            background: #000080;
+            color: white;
+        }
+
+        .taskbar-time {
+            margin-left: auto;
+            background: #a0a0a0;
+            border: 2px inset #808080;
+            padding: 5px 12px;
+            font-size: 14px;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        /* SHUTDOWN ANIMATION */
+        .shutdown-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 30000;
+        }
+
+        .shutdown-content {
+            text-align: center;
+        }
+
+        .shutdown-text {
+            margin: 10px 0;
+            font-size: 24px;
+            animation: shutdownPulse 0.5s infinite;
+        }
+
+        @keyframes shutdownPulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .shutdown-progress {
+            width: 400px;
+            height: 30px;
+            background: #000;
+            border: 4px solid #0f0;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .shutdown-bar {
+            height: 100%;
+            width: 0%;
+            background: #0f0;
+            transition: width 0.1s linear;
+        }
+
+        .shutdown-dots {
+            font-size: 40px;
+            letter-spacing: 10px;
+            animation: dotsBlink 0.5s infinite;
+        }
+
+        @keyframes dotsBlink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* MODAL */
+        .password-modal {
+            background: #c0c0c0;
+            border: 5px solid;
+            border-color: #ffffff #404040 #404040 #ffffff;
+            padding: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15000;
+            min-width: 350px;
+            box-shadow: 10px 10px 0 #000000b0;
+            display: none;
+        }
+
+        .modal-title {
+            background: #000080;
+            color: white;
+            padding: 8px;
+            margin: -20px -20px 15px -20px;
+            font-size: 16px;
+            border: 2px solid;
+            border-color: #dfdfdf #404040 #404040 #dfdfdf;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            background: white;
+            border: 3px inset #808080;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-buttons button {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .modal-buttons button:active {
+            border-color: #808080 #ffffff #ffffff #808080;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #00000080;
+            z-index: 14000;
+            display: none;
+        }
+
+        .used-msg {
+            background: #ffc0c0;
+            border: 2px solid #ff0000;
+            padding: 8px;
+            color: #ff0000;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .code-info {
+            background: #ffffcc;
+            border: 2px solid #000080;
+            padding: 5px;
+            margin-top: 10px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* SEARCH INPUT */
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            background: white;
+            border: 3px inset #808080;
+            font-family: 'Courier New';
+            margin-bottom: 10px;
+        }
+
+        .history-item {
+            padding: 8px;
+            border-bottom: 1px solid #808080;
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            background: #000080;
+            color: white;
+        }
+
+        .stat-box {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            margin: 10px 0;
+            border: 3px inset #808080;
+            font-size: 14px;
+        }
+
+        .encrypt-box {
+            background: #ffffcc;
+            padding: 15px;
+            border: 3px inset #808080;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #808080;
+            border: 3px inset #ffffff;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #00ff00;
+            transition: width 0.3s;
+        }
+
+        .context-menu {
+            position: fixed;
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #ffffff #404040 #404040 #ffffff;
+            padding: 5px;
+            z-index: 20000;
+            display: none;
+        }
+
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .context-menu-item:hover {
+            background: #000080;
+            color: white;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- BOOTSCREEN -->
+    <div class="boot-screen" id="bootScreen">
+        <div class="boot-content">
+            <div class="boot-line">Award Modular BIOS v4.51PG</div>
+            <div class="boot-line">Copyright (C) 1984-98, Award Software Inc.</div>
+            <div class="boot-line">&nbsp;</div>
+            <div class="boot-line">Intel Pentium II 233 MHz Processor</div>
+            <div class="boot-line">Memory Test: 65536 KB OK</div>
+            <div class="boot-line">&nbsp;</div>
+            <div class="boot-line">Primary Master: 4.3 GB</div>
+            <div class="boot-line">Primary Slave: None</div>
+            <div class="boot-line">Secondary Master: CD-ROM 32x</div>
+            <div class="boot-line">&nbsp;</div>
+            <div class="boot-line">Starting Windows 98...</div>
+            <div class="boot-line">cursors<span class="boot-blink">_</span></div>
+        </div>
+    </div>
+
+    <!-- SHUTDOWN SCREEN -->
+    <div class="shutdown-screen" id="shutdownScreen">
+        <div class="shutdown-content">
+            <div class="shutdown-text">Windows 98 wird heruntergefahren</div>
+            <div class="shutdown-progress">
+                <div class="shutdown-bar" id="shutdownBar"></div>
+            </div>
+            <div class="shutdown-dots" id="shutdownDots">...</div>
+            <div style="margin-top: 30px; font-size: 14px;">Bitte warten...</div>
+        </div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div class="desktop" id="desktop">
+        <!-- DESKTOP ICONS -->
+        <div class="desktop-icons">
+            <div class="desktop-icon" id="desktopEghIcon" ondblclick="openEGHFullscreen()">
+                <div class="icon">📁</div>
+                <span>EGH-FILES</span>
+            </div>
+            <div class="desktop-icon" id="desktopRecycleIcon" ondblclick="openRecycleBin()">
+                <div class="icon">🗑️</div>
+                <span>Papierkorb</span>
+            </div>
+            <div class="desktop-icon" id="desktopComputerIcon" ondblclick="openComputer()">
+                <div class="icon">💻</div>
+                <span>Arbeitsplatz</span>
+            </div>
+        </div>
+
+        <!-- STARTMENU MIT NEUEN FEATURES -->
+        <div class="start-menu" id="startMenu">
+            <div class="start-menu-header">Windows 98 [ENHANCED]</div>
+            <div class="start-menu-item" onclick="openEGHFullscreen(); toggleStartMenu();">
+                <span>📁</span>
+                <span>EGH-FILES</span>
+            </div>
+            <div class="start-menu-item" onclick="openRecycleBin(); toggleStartMenu();">
+                <span>🗑️</span>
+                <span>Papierkorb</span>
+            </div>
+            <div class="start-menu-item" onclick="openComputer(); toggleStartMenu();">
+                <span>💻</span>
+                <span>Arbeitsplatz</span>
+            </div>
+            <div class="start-menu-divider"></div>
+            <div class="start-menu-item" onclick="openSearchWindow(); toggleStartMenu();">
+                <span>🔍</span>
+                <span>Suche</span>
+            </div>
+            <div class="start-menu-item" onclick="openHistoryWindow(); toggleStartMenu();">
+                <span>📜</span>
+                <span>Verlauf</span>
+            </div>
+            <div class="start-menu-item" onclick="openStatsWindow(); toggleStartMenu();">
+                <span>📊</span>
+                <span>Statistiken</span>
+            </div>
+            <div class="start-menu-item" onclick="openEncryptorWindow(); toggleStartMenu();">
+                <span>🔐</span>
+                <span>Code-Encryptor</span>
+            </div>
+            <div class="start-menu-divider"></div>
+            <div class="start-menu-item" onclick="shutdownPC()">
+                <span>⏻</span>
+                <span>Herunterfahren...</span>
+            </div>
+        </div>
+
+        <!-- EGH-FILES VOLLBILD FENSTER -->
+        <div class="egh-window" id="eghWindow">
+            <div class="egh-title">
+                <span>📁 EGH-FILES.EXE - Beweisarchiv v2.0</span>
+                <div>
+                    <button onclick="minimizeEGH()">─</button>
+                    <button onclick="closeEGH()">✕</button>
+                </div>
+            </div>
+            <div class="egh-content">
+                <div class="path-bar">
+                    <span class="drive">C:</span>
+                    <span style="color:#000080;">\EGH-FILES\BEWEISE\</span>
+                    <span style="margin-left:auto;"><span id="folderCount">7</span> Ordner</span>
+                </div>
+
+                <div class="folder-grid" id="folderGrid"></div>
+
+                <div class="status-bar">
+                    <span>📊 <span id="totalFolders">7</span> Ordner | <span id="totalFiles">156</span> Dateien</span>
+                    <span>🔒 <span id="lockedCount">7</span>/<span id="totalFolders2">7</span> gesperrt</span>
+                </div>
+
+                <div class="info-line">
+                    <span>📅 Erstellt von:</span>
+                    <span class="bill-badge" id="creatorBadge">BILL-CIPHER</span>
+                    <span style="margin-left:auto;">⚡ admin-code: BILL-CIPHER</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAPIERKORB FENSTER -->
+        <div class="recycle-window" id="recycleWindow">
+            <div class="window-title" id="recycleTitle">
+                <span>🗑️ Papierkorb</span>
+                <div>
+                    <button onclick="closeRecycleBin()">✕</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="path-bar">
+                    <span class="drive">C:</span>
+                    <span style="color:#000080;">\RECYCLED\</span>
+                    <span style="margin-left:auto;"><span id="recycleCount">5</span> Objekte</span>
+                </div>
+
+                <div class="file-grid" id="recycleGrid"></div>
+
+                <div class="info-line" style="margin-top:15px;">
+                    <span>📝 Alle Dateien erstellt von:</span>
+                    <span class="bill-badge">BILL-CIPHER</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARBEITSPLATZ FENSTER -->
+        <div class="computer-window" id="computerWindow">
+            <div class="window-title" id="computerTitle">
+                <span>💻 Arbeitsplatz</span>
+                <div>
+                    <button onclick="closeComputer()">✕</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="path-bar">
+                    <span class="drive">C:</span>
+                    <span style="color:#000080;">\ARBEITSPLATZ\</span>
+                    <span style="margin-left:auto;">2 Objekte</span>
+                </div>
+
+                <div class="file-grid" id="computerGrid"></div>
+
+                <!-- NOTIZ FENSTER -->
+                <div class="note-window" id="noteWindow">
+                    <div class="window-title" id="noteTitle">
+                        <span>📝 Notiz - BILL-CIPHER</span>
+                        <div>
+                            <button onclick="closeNote()">✕</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="note-content" id="noteContent">
+                            ██████╗ ██╗██╗     ██╗         ██████╗██╗██████╗ ██╗  ██╗███████╗██████╗ 
+                            ██╔══██╗██║██║     ██║        ██╔════╝██║██╔══██╗██║  ██║██╔════╝██╔══██╗
+                            ██████╔╝██║██║     ██║        ██║     ██║██████╔╝███████║█████╗  ██████╔╝
+                            ██╔══██╗██║██║     ██║        ██║     ██║██╔═══╝ ██╔══██║██╔══╝  ██╔══██╗
+                            ██████╔╝██║███████╗███████╗   ╚██████╗██║██║     ██║  ██║███████╗██║  ██║
+                            ╚═════╝ ╚═╝╚══════╝╚══════╝    ╚═════╝╚═╝╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+                            
+                            ICH BIN BILL-CIPHER.
+                            DIESES SYSTEM GEHÖRT MIR.
+                            
+                            Der Timer läuft bis 1.9.26...
+                            Dann ist es vorbei.
+                            
+                            ⚡ ALLE ORDNER SIND VON MIR ⚡
+                            ⚡ ADMIN-CODE: BILL-CIPHER ⚡
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TIMER FENSTER -->
+                <div class="timer-window" id="timerWindow">
+                    <div class="timer-title">⏰ COUNTDOWN ZUM UNTERGANG ⏰</div>
+                    <div class="timer-content">
+                        <div class="timer-date">ZIEL: 1. SEPTEMBER 2026</div>
+                        <div class="timer-display" id="timerDisplay">-- Tage</div>
+                        <div style="font-size: 18px; margin: 15px 0;">⚡ BILL-CIPHER ⚡</div>
+                        <div style="font-size: 14px;">"Die Zeit läuft ab..."</div>
+                    </div>
+                    <div style="background: #ff0000; padding: 8px; text-align: center; border-top: 2px solid #800000;">
+                        <button onclick="closeTimer()" style="background: black; color: #ff0000; border: 2px solid #ff0000; padding: 5px 20px; cursor: pointer; font-weight: bold;">SCHLIESSEN</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TASKBAR MIT NEUEN TASKBAR-ITEMS -->
+    <div class="taskbar">
+        <div class="start-button" id="startButton" onclick="toggleStartMenu()">
+            <span>🪟</span>
+            <span>Start</span>
+        </div>
+        <div class="taskbar-item" id="taskbarEghItem" onclick="openEGHFullscreen()">
+            <span>📁</span>
+            <span>EGH-FILES</span>
+        </div>
+        <div class="taskbar-item" id="taskbarRecycleItem" onclick="openRecycleBin()">
+            <span>🗑️</span>
+            <span>Papierkorb</span>
+        </div>
+        <div class="taskbar-item" id="taskbarComputerItem" onclick="openComputer()">
+            <span>💻</span>
+            <span>Arbeitsplatz</span>
+        </div>
+        <div class="taskbar-item" onclick="openSearchWindow()">
+            <span>🔍</span>
+            <span>Suche</span>
+        </div>
+        <div class="taskbar-item" onclick="openStatsWindow()">
+            <span>📊</span>
+            <span>Stats</span>
+        </div>
+        <div class="taskbar-time" id="taskbarTime">12:34</div>
+    </div>
+
+    <!-- PASSWORT MODAL -->
+    <div class="overlay" id="overlay"></div>
+    <div class="password-modal" id="passwordModal">
+        <div class="modal-title">🔒 Ordner öffnen</div>
+        <div class="modal-content">
+            <p style="margin-bottom:10px;"><span id="selectedFolderName"></span> (einmal-code)</p>
+            <input type="text" id="passwordInput" placeholder="Code eingeben" maxlength="12" autocomplete="off">
+            <div id="errorMsg" style="margin-top:10px;"></div>
+            <div class="code-info">⚡ Admin-Code: BILL-CIPHER (öffnet alle Ordner)</div>
+        </div>
+        <div class="modal-buttons">
+            <button id="cancelBtn">Abbrechen</button>
+            <button id="unlockBtn">OK</button>
+        </div>
+    </div>
+
+    <!-- CONTAINER FÜR DYNAMISCHE FENSTER -->
+    <div id="dynamicWindowsContainer"></div>
+
+    <!-- CONTEXT MENU -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="contextMenuAction('open')">Öffnen</div>
+        <div class="context-menu-item" onclick="contextMenuAction('copy')">Kopieren</div>
+        <div class="context-menu-item" onclick="contextMenuAction('delete')">Löschen</div>
+        <div class="context-menu-item" onclick="contextMenuAction('properties')">Eigenschaften</div>
+    </div>
+
+    <script>
+        // NEUE ORDNER NAMEN
+        const folders = [
+            { name: 'GianKannalles_egh', files: 8, type: 'video' },
+            { name: 'Elektrochicken', files: 15, type: 'audio' },
+            { name: 'Natur88', files: 22, type: 'fotos' },
+            { name: 'PritFrit_egh', files: 12, type: 'chats' },
+            { name: 'Soppti_egh', files: 19, type: 'mixed' },
+            { name: 'Kotkuhle_egh', files: 7, type: 'dokumente' },
+            { name: 'Natur88_egh', files: 31, type: 'komplett' }
+        ];
+
+        // ADMIN-CODE
+        const ADMIN_CODE = "BILL-CIPHER";
+
+        // VERLAUF SPEICHERN
+        let accessHistory = [];
+        let searchHistory = [];
+
+        // API-FUNKTION für zufällige Codes
+        function generateRandomCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return code;
+        }
+
+        // CODES GENERIEREN
+        let folderCodes = {};
+        folders.forEach(f => {
+            folderCodes[f.name] = generateRandomCode();
+        });
+
+        // STATUS
+        let openedFolders = {};
+        folders.forEach(f => openedFolders[f.name] = false);
+
+        // INHALTE FÜR DIE ORDNER
+        const folderContents = {
+            'GianKannalles_egh': [
+                { name: 'beweis1.jpg', type: 'image', size: '234 KB', date: '15.03.2018', url: 'https://i.imgur.com/9sFq2Jx.jpg' },
+                { name: 'video1.mp4', type: 'video', size: '3.1 MB', date: '12.03.2018', url: 'https://www.w3schools.com/html/movie.mp4' }
+            ],
+            'Elektrochicken': [
+                { name: 'audio1.mp3', type: 'audio', size: '1.2 MB', date: '10.03.2018', url: '#' }
+            ],
+            'Natur88': [
+                { name: 'naturfoto.jpg', type: 'image', size: '456 KB', date: '10.03.2018', url: 'https://i.imgur.com/4vxZxqG.jpg' }
+            ],
+            'PritFrit_egh': [
+                { name: 'chat_log.txt', type: 'text', size: '23 KB', date: '11.03.2018', url: '#' }
+            ],
+            'Soppti_egh': [
+                { name: 'mixed1.jpg', type: 'image', size: '189 KB', date: '13.03.2018', url: 'https://i.imgur.com/V73G9sM.jpg' },
+                { name: 'mixed2.mp4', type: 'video', size: '2.3 MB', date: '14.03.2018', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
+            ],
+            'Kotkuhle_egh': [
+                { name: 'dokument.txt', type: 'text', size: '7 KB', date: '09.03.2018', url: '#' }
+            ],
+            'Natur88_egh': [
+                { name: 'komplett1.jpg', type: 'image', size: '312 KB', date: '16.03.2018', url: 'https://i.imgur.com/KtCcGhY.jpg' },
+                { name: 'komplett2.png', type: 'image', size: '156 KB', date: '14.03.2018', url: 'https://i.imgur.com/K2xqXgT.jpg' },
+                { name: 'komplett3.mp4', type: 'video', size: '4.2 MB', date: '17.03.2018', url: 'https://www.w3schools.com/html/movie.mp4' }
+            ]
+        };
+
+        // RIP ABGE DATEIEN
+        const ripFiles = [
+            { name: 'RIP_ABGE_1.txt', date: '12.03.2018', size: '1 KB', index: 0 },
+            { name: 'RIP_ABGE_2.txt', date: '12.03.2018', size: '1 KB', index: 1 },
+            { name: 'RIP_ABGE_3.txt', date: '13.03.2018', size: '2 KB', index: 2 },
+            { name: 'ABGE_IST_TOT.txt', date: '14.03.2018', size: '1 KB', index: 3 },
+            { name: 'ADMINEVIL_NACHRUF.txt', date: '15.03.2018', size: '3 KB', index: 4 }
+        ];
+
+        // DATEIEN FÜR ARBEITSPLATZ
+        const computerFiles = [
+            { name: 'Notiz_BILL-CIPHER.txt', date: '01.01.2018', size: '4 KB', type: 'note' },
+            { name: 'Timer_Untergang.txt', date: '01.01.2018', size: '2 KB', type: 'timer' }
+        ];
+
+        // STATUS
+        let eghOpen = false;
+        let recycleOpen = false;
+        let computerOpen = false;
+        let noteOpen = false;
+        let timerOpen = false;
+        let timerInterval;
+        
+        // Fensterzähler
+        let windowCount = 0;
+        const maxWindows = 20;
+
+        // Context Menu
+        let currentContextItem = null;
+
+        // BOOT SEQUENCE
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('bootScreen').style.display = 'none';
+                document.getElementById('desktop').style.display = 'block';
+                showStartupMessage();
+            }, 4000);
+
+            updateTime();
+            setInterval(updateTime, 1000);
+            renderFolders();
+            renderRecycleBin();
+            renderComputer();
+            startTimer();
+            
+            // Context Menu schließen bei Klick
+            document.addEventListener('click', () => {
+                document.getElementById('contextMenu').style.display = 'none';
+            });
+        };
+
+        // STARTUP MESSAGE
+        function showStartupMessage() {
+            addHistory('System gestartet', 'info');
+        }
+
+        function updateTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            document.getElementById('taskbarTime').innerText = hours + ':' + minutes + ':' + seconds;
+        }
+
+        // STARTMENU
+        function toggleStartMenu() {
+            const menu = document.getElementById('startMenu');
+            const btn = document.getElementById('startButton');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+                btn.classList.remove('active');
+            } else {
+                menu.style.display = 'block';
+                btn.classList.add('active');
+            }
+        }
+
+        // Schließe Startmenü
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('startMenu');
+            const btn = document.getElementById('startButton');
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.style.display = 'none';
+                btn.classList.remove('active');
+            }
+        });
+
+        // NEUE FEATURE-FENSTER
+        function openSearchWindow() {
+            if (windowCount >= maxWindows) {
+                alert('Zu viele Fenster geöffnet!');
+                return;
+            }
+            
+            const container = document.getElementById('dynamicWindowsContainer');
+            const windowId = 'searchWindow_' + Date.now();
+            
+            const windowHTML = `
+                <div class="search-window" id="${windowId}" style="top: ${150 + windowCount * 10}px; left: ${200 + windowCount * 10}px;">
+                    <div class="window-title" id="${windowId}_title">
+                        <span>🔍 Suche in EGH-FILES</span>
+                        <div>
+                            <button onclick="closeDynamicWindow('${windowId}')">✕</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <input type="text" class="search-input" id="${windowId}_input" placeholder="Suchbegriff eingeben...">
+                        <div style="margin: 10px 0;">
+                            <button onclick="performSearch('${windowId}')" style="background: #c0c0c0; border: 3px outset #ffffff; padding: 5px 15px;">Suchen</button>
+                        </div>
+                        <div id="${windowId}_results" style="max-height: 200px; overflow-y: auto; background: #ffffff; border: 3px inset #808080; padding: 10px;">
+                            Suchresultate erscheinen hier...
+                        </div>
+                        <div class="info-line" style="margin-top: 10px;">
+                            <span>Letzte Suche: -</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', windowHTML);
+            windowCount++;
+            
+            setTimeout(() => {
+                makeDraggable(windowId + '_title', windowId);
+            }, 100);
+        }
+
+        function performSearch(windowId) {
+            const input = document.getElementById(windowId + '_input');
+            const resultsDiv = document.getElementById(windowId + '_results');
+            const searchTerm = input.value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                resultsDiv.innerHTML = 'Bitte Suchbegriff eingeben.';
+                return;
+            }
+            
+            searchHistory.push(searchTerm);
+            
+            let results = [];
+            
+            // In Ordnernamen suchen
+            folders.forEach(f => {
+                if (f.name.toLowerCase().includes(searchTerm)) {
+                    results.push(`Ordner: ${f.name} (${f.files} Dateien)`);
+                }
+            });
+            
+            // In Dateien suchen
+            for (let folder in folderContents) {
+                folderContents[folder].forEach(file => {
+                    if (file.name.toLowerCase().includes(searchTerm)) {
+                        results.push(`Datei: ${folder} → ${file.name}`);
+                    }
+                });
+            }
+            
+            if (results.length === 0) {
+                resultsDiv.innerHTML = 'Keine Ergebnisse gefunden.';
+            } else {
+                resultsDiv.innerHTML = results.map(r => `<div style="padding: 5px; border-bottom: 1px solid #808080;">${r}</div>`).join('');
+            }
+            
+            addHistory(`Suche: "${searchTerm}" (${results.length} Treffer)`, 'search');
+        }
+
+        function openHistoryWindow() {
+            if (windowCount >= maxWindows) {
+                alert('Zu viele Fenster geöffnet!');
+                return;
+            }
+            
+            const container = document.getElementById('dynamicWindowsContainer');
+            const windowId = 'historyWindow_' + Date.now();
+            
+            let historyHTML = '';
+            accessHistory.forEach((item, index) => {
+                historyHTML += `<div class="history-item">${index+1}. ${item}</div>`;
+            });
+            
+            if (historyHTML === '') {
+                historyHTML = '<div style="padding: 10px;">Kein Verlauf vorhanden.</div>';
+            }
+            
+            const windowHTML = `
+                <div class="history-window" id="${windowId}" style="top: ${150 + windowCount * 10}px; left: ${250 + windowCount * 10}px;">
+                    <div class="window-title" id="${windowId}_title">
+                        <span>📜 Verlauf</span>
+                        <div>
+                            <button onclick="closeDynamicWindow('${windowId}')">✕</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${historyHTML}
+                        </div>
+                        <div class="info-line" style="margin-top: 10px;">
+                            <span>${accessHistory.length} Einträge</span>
+                            <button onclick="clearHistory()" style="background: #c0c0c0; border: 3px outset #ffffff;">Löschen</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', windowHTML);
+            windowCount++;
+            
+            setTimeout(() => {
+                makeDraggable(windowId + '_title', windowId);
+            }, 100);
+        }
+
+        function clearHistory() {
+            accessHistory = [];
+            searchHistory = [];
+            addHistory('Verlauf gelöscht', 'system');
+            alert('Verlauf wurde gelöscht.');
+        }
+
+        function openStatsWindow() {
+            if (windowCount >= maxWindows) {
+                alert('Zu viele Fenster geöffnet!');
+                return;
+            }
+            
+            const container = document.getElementById('dynamicWindowsContainer');
+            const windowId = 'statsWindow_' + Date.now();
+            
+            const totalFiles = Object.values(folderContents).reduce((acc, files) => acc + files.length, 0);
+            const openedCount = folders.filter(f => openedFolders[f.name]).length;
+            
+            const windowHTML = `
+                <div class="stats-window" id="${windowId}" style="top: ${150 + windowCount * 10}px; left: ${300 + windowCount * 10}px;">
+                    <div class="window-title" id="${windowId}_title">
+                        <span>📊 Statistiken</span>
+                        <div>
+                            <button onclick="closeDynamicWindow('${windowId}')">✕</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="stat-box">
+                            <div>📁 Ordner gesamt: ${folders.length}</div>
+                            <div>📄 Dateien gesamt: ${totalFiles}</div>
+                            <div>🔒 Geöffnete Ordner: ${openedCount}</div>
+                            <div>🔐 Noch gesperrt: ${folders.length - openedCount}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div>🕒 Verlaufseinträge: ${accessHistory.length}</div>
+                            <div>🔍 Suchanfragen: ${searchHistory.length}</div>
+                            <div>🪟 Offene Fenster: ${windowCount}</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${(openedCount / folders.length) * 100}%"></div>
+                        </div>
+                        <div style="text-align: center;">${Math.round((openedCount / folders.length) * 100)}% der Ordner geöffnet</div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', windowHTML);
+            windowCount++;
+            
+            setTimeout(() => {
+                makeDraggable(windowId + '_title', windowId);
+            }, 100);
+        }
+
+        function openEncryptorWindow() {
+            if (windowCount >= maxWindows) {
+                alert('Zu viele Fenster geöffnet!');
+                return;
+            }
+            
+            const container = document.getElementById('dynamicWindowsContainer');
+            const windowId = 'encryptorWindow_' + Date.now();
+            
+            const windowHTML = `
+                <div class="encryptor-window" id="${windowId}" style="top: ${150 + windowCount * 10}px; left: ${200 + windowCount * 10}px;">
+                    <div class="window-title" id="${windowId}_title">
+                        <span>🔐 Code-Encryptor v1.0</span>
+                        <div>
+                            <button onclick="closeDynamicWindow('${windowId}')">✕</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="encrypt-box">
+                            <p style="margin-bottom: 10px;">Text eingeben:</p>
+                            <input type="text" id="${windowId}_input" class="search-input" placeholder="Text...">
+                            <div style="margin: 10px 0;">
+                                <button onclick="encryptText('${windowId}')" style="background: #c0c0c0; border: 3px outset #ffffff; padding: 5px 15px;">Encrypt</button>
+                            </div>
+                            <p style="margin-top: 10px;">Verschlüsselt:</p>
+                            <div id="${windowId}_output" style="background: #000; color: #0f0; padding: 10px; border: 3px inset #808080; word-break: break-all;">
+                                -
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', windowHTML);
+            windowCount++;
+            
+            setTimeout(() => {
+                makeDraggable(windowId + '_title', windowId);
+            }, 100);
+        }
+
+        function encryptText(windowId) {
+            const input = document.getElementById(windowId + '_input');
+            const output = document.getElementById(windowId + '_output');
+            const text = input.value;
+            
+            if (!text) {
+                output.innerText = 'Bitte Text eingeben!';
+                return;
+            }
+            
+            // Einfache "Verschlüsselung" (Base64)
+            const encrypted = btoa(text);
+            output.innerText = encrypted;
+            
+            addHistory(`Text verschlüsselt: "${text}" → "${encrypted.substring(0, 10)}..."`, 'encrypt');
+        }
+
+        function addHistory(entry, type) {
+            const timestamp = new Date().toLocaleTimeString();
+            accessHistory.push(`[${timestamp}] ${entry}`);
+            if (accessHistory.length > 50) accessHistory.shift();
+        }
+
+        // EGH-FILES FUNKTIONEN
+        function openEGHFullscreen() {
+            document.getElementById('eghWindow').style.display = 'block';
+            document.getElementById('taskbarEghItem').classList.add('highlight');
+            eghOpen = true;
+            addHistory('EGH-FILES geöffnet', 'open');
+        }
+
+        function closeEGH() {
+            document.getElementById('eghWindow').style.display = 'none';
+            document.getElementById('taskbarEghItem').classList.remove('highlight');
+            eghOpen = false;
+            addHistory('EGH-FILES geschlossen', 'close');
+        }
+
+        function minimizeEGH() {
+            document.getElementById('eghWindow').style.display = 'none';
+            document.getElementById('taskbarEghItem').classList.remove('highlight');
+            eghOpen = false;
+            addHistory('EGH-FILES minimiert', 'close');
+        }
+
+        // PAPIERKORB FUNKTIONEN
+        function openRecycleBin() {
+            document.getElementById('recycleWindow').style.display = 'block';
+            document.getElementById('taskbarRecycleItem').classList.add('highlight');
+            recycleOpen = true;
+            addHistory('Papierkorb geöffnet', 'open');
+        }
+
+        function closeRecycleBin() {
+            document.getElementById('recycleWindow').style.display = 'none';
+            document.getElementById('taskbarRecycleItem').classList.remove('highlight');
+            recycleOpen = false;
+        }
+
+        // RIP DATEI ÖFFNEN
+        function openRipFile(file) {
+            if (windowCount >= maxWindows) {
+                alert('Zu viele Fenster geöffnet! Bitte schließen Sie einige.');
+                return;
+            }
+            
+            const container = document.getElementById('dynamicWindowsContainer');
+            const windowId = 'ripWindow_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            let ripMessage = '';
+            if (file.name.includes('RIP_ABGE')) {
+                ripMessage = 'RIP ABGE - FILE ' + (file.index + 1);
+            } else if (file.name.includes('ABGE_IST_TOT')) {
+                ripMessage = 'ABGE IST TOT';
+            } else if (file.name.includes('ADMINEVIL_NACHRUF')) {
+                ripMessage = 'NACHRUF VON ADMINEVIL';
+            }
+            
+            const windowHTML = `
+                <div class="rip-file-window" id="${windowId}" style="top: ${100 + windowCount * 30}px; left: ${150 + windowCount * 30}px;">
+                    <div class="window-title" id="${windowId}_title">
+                        <span>📄 ${file.name}</span>
+                        <div>
+                            <button onclick="closeDynamicWindow('${windowId}')">✕</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="rip-file-content">
+                            <div class="rip-title">💀 ${ripMessage} 💀</div>
+                            <div class="rip-divider"></div>
+                            <div class="rip-text">${file.name}</div>
+                            <div class="rip-text">Erstellt am: ${file.date}</div>
+                            <div class="rip-text">Größe: ${file.size}</div>
+                            <div class="rip-divider"></div>
+                            <div class="rip-text" style="font-size: 24px;">RIP ABGE</div>
+                            <div class="rip-divider"></div>
+                            <div class="rip-text">erstellt von BILL-CIPHER</div>
+                            <div style="margin-top: 20px; font-size: 12px;">2018</div>
+                        </div>
+                        <div class="info-line" style="margin-top: 10px;">
+                            <span>📝 Dateiinformationen</span>
+                            <span class="bill-badge">BILL-CIPHER</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', windowHTML);
+            windowCount++;
+            
+            addHistory(`RIP-Datei geöffnet: ${file.name}`, 'open');
+            
+            setTimeout(() => {
+                makeDraggable(windowId + '_title', windowId);
+            }, 100);
+        }
+
+        // ORDNER-INHALT FENSTER ÖFFNEN
+        function openFolderContentWindow(folderName, contents) {
+            if (windowCount >= maxWindows) {
+                alert('Zu viele Fenster geöffnet! Bitte schließen Sie einige.');
+                return;
+            }
+            
+            const container = document.getElementById('dynamicWindowsContainer');
+            const windowId = 'folderWindow_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            // Datei-Grid HTML erstellen
+            let filesHTML = '';
+            contents.forEach((file, index) => {
+                let icon = '📄';
+                if (file.type === 'image') icon = '🖼️';
+                else if (file.type === 'video') icon = '🎬';
+                else if (file.type === 'audio') icon = '🎵';
+                
+                filesHTML += `
+                    <div class="file-item" onclick="openFileViewer('${windowId}', ${index})" oncontextmenu="showContextMenu(event, 'file', '${file.name}')">
+                        <div class="file-icon">${icon}</div>
+                        <div class="file-info">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-meta">${file.date} · ${file.size}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            const windowHTML = `
+                <div class="folder-content-window" id="${windowId}" style="top: ${100 + windowCount * 20}px; left: ${200 + windowCount * 20}px;">
+                    <div class="window-title" id="${windowId}_title">
+                        <span>📁 ${folderName}</span>
+                        <div>
+                            <button onclick="closeDynamicWindow('${windowId}')">✕</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="path-bar">
+                            <span class="drive">C:</span>
+                            <span style="color:#000080;">\\EGH-FILES\\${folderName}\\</span>
+                            <span style="margin-left:auto;">${contents.length} Objekte</span>
+                        </div>
+                        
+                        <div class="file-grid" id="${windowId}_filegrid">
+                            ${filesHTML}
+                        </div>
+                        
+                        <div class="info-line" style="margin-top: 10px;">
+                            <span>📝 Beweismaterial</span>
+                            <span class="bill-badge">BILL-CIPHER</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', windowHTML);
+            windowCount++;
+            
+            // Speichere die Inhalte
+            window[windowId + '_contents'] = contents;
+            window[windowId + '_folderName'] = folderName;
+            
+            addHistory(`Ordner geöffnet: ${folderName}`, 'open');
+            
+            setTimeout(() => {
+                makeDraggable(windowId + '_title', windowId);
+            }, 100);
+        }
+
+        // BILD/VIDEO ANSICHT FENSTER
+        function openFileViewer(folderWindowId, fileIndex) {
+            if (windowCount >= maxWindows) {
+                alert('Zu viele Fenster geöffnet! Bitte schließen Sie einige.');
+                return;
+            }
+            
+            const contents = window[folderWindowId + '_contents'];
+            const folderName = window[folderWindowId + '_folderName'];
+            if (!contents || !contents[fileIndex]) return;
+            
+            const file = contents[fileIndex];
+            const container = document.getElementById('dynamicWindowsContainer');
+            const windowId = 'viewerWindow_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            let contentHTML = '';
+            if (file.type === 'image') {
+                contentHTML = `
+                    <div class="image-container">
+                        <img src="${file.url}" alt="${file.name}" oncontextmenu="return true;" style="cursor: pointer;">
+                    </div>
+                    <div class="download-hint">
+                        💾 Rechtsklick auf das Bild → "Bild speichern unter..." zum Herunterladen
+                    </div>
+                `;
+            } else if (file.type === 'video') {
+                contentHTML = `
+                    <div class="video-container">
+                        <video controls oncontextmenu="return true;">
+                            <source src="${file.url}" type="video/mp4">
+                            Ihr Browser unterstützt kein Video-Tag.
+                        </video>
+                    </div>
+                    <div class="download-hint">
+                        💾 Rechtsklick auf das Video → "Video speichern unter..." zum Herunterladen
+                    </div>
+                `;
+            } else {
+                contentHTML = `
+                    <div style="background: #ffffcc; padding: 30px; text-align: center; border: 3px inset #808080;">
+                        <div style="font-size: 48px;">📄</div>
+                        <div style="margin-top: 20px;">${file.name}</div>
+                        <div style="margin-top: 10px;">Diese Datei kann nicht angezeigt werden.</div>
+                    </div>
+                `;
+            }
+            
+            const windowHTML = `
+                <div class="image-view-window" id="${windowId}" style="top: ${150 + windowCount * 10}px; left: ${250 + windowCount * 10}px;">
+                    <div class="window-title" id="${windowId}_title">
+                        <span>🖼️ ${file.name}</span>
+                        <div>
+                            <button onclick="closeDynamicWindow('${windowId}')">✕</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="path-bar">
+                            <span class="drive">C:</span>
+                            <span style="color:#000080;">\\EGH-FILES\\${folderName}\\${file.name}</span>
+                        </div>
+                        
+                        ${contentHTML}
+                        
+                        <div class="info-line" style="margin-top: 10px;">
+                            <span>📏 ${file.size}</span>
+                            <span>📅 ${file.date}</span>
+                            <span class="bill-badge">BILL-CIPHER</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', windowHTML);
+            windowCount++;
+            
+            addHistory(`Datei geöffnet: ${file.name}`, 'view');
+            
+            setTimeout(() => {
+                makeDraggable(windowId + '_title', windowId);
+            }, 100);
+        }
+
+        // DYNAMISCHES FENSTER SCHLIESSEN
+        function closeDynamicWindow(windowId) {
+            const win = document.getElementById(windowId);
+            if (win) {
+                const folderName = window[windowId + '_folderName'];
+                if (folderName) {
+                    addHistory(`Fenster geschlossen: ${folderName}`, 'close');
+                }
+                win.remove();
+                windowCount--;
+            }
+        }
+
+        function renderRecycleBin() {
+            const grid = document.getElementById('recycleGrid');
+            grid.innerHTML = '';
+            
+            ripFiles.forEach((file) => {
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                div.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-meta">${file.date} · ${file.size}</div>
+                    </div>
+                `;
+                
+                div.onclick = () => {
+                    openRipFile(file);
+                };
+                
+                grid.appendChild(div);
+            });
+            
+            document.getElementById('recycleCount').innerText = ripFiles.length;
+        }
+
+        // ARBEITSPLATZ FUNKTIONEN
+        function openComputer() {
+            document.getElementById('computerWindow').style.display = 'block';
+            document.getElementById('taskbarComputerItem').classList.add('highlight');
+            computerOpen = true;
+            addHistory('Arbeitsplatz geöffnet', 'open');
+        }
+
+        function closeComputer() {
+            document.getElementById('computerWindow').style.display = 'none';
+            document.getElementById('taskbarComputerItem').classList.remove('highlight');
+            computerOpen = false;
+        }
+
+        function renderComputer() {
+            const grid = document.getElementById('computerGrid');
+            grid.innerHTML = '';
+            
+            computerFiles.forEach((file) => {
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                div.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-meta">${file.date} · ${file.size}</div>
+                    </div>
+                `;
+                
+                div.onclick = () => {
+                    if (file.type === 'note') {
+                        openNote();
+                    } else if (file.type === 'timer') {
+                        openTimer();
+                    }
+                };
+                
+                grid.appendChild(div);
+            });
+        }
+
+        // NOTIZ FUNKTIONEN
+        function openNote() {
+            document.getElementById('noteWindow').style.display = 'block';
+            noteOpen = true;
+            addHistory('Notiz geöffnet', 'open');
+        }
+
+        function closeNote() {
+            document.getElementById('noteWindow').style.display = 'none';
+            noteOpen = false;
+        }
+
+        // TIMER FUNKTIONEN
+        function openTimer() {
+            document.getElementById('timerWindow').style.display = 'block';
+            timerOpen = true;
+        }
+
+        function closeTimer() {
+            document.getElementById('timerWindow').style.display = 'none';
+            timerOpen = false;
+        }
+
+        function startTimer() {
+            const targetDate = new Date('2026-09-01T00:00:00');
+            
+            function updateTimer() {
+                const now = new Date();
+                const diff = targetDate - now;
+                
+                if (diff <= 0) {
+                    document.getElementById('timerDisplay').innerText = 'UNTERGANG!';
+                    clearInterval(timerInterval);
+                    return;
+                }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('timerDisplay').innerText = `${days} Tage ${hours}h ${minutes}m ${seconds}s`;
+            }
+            
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // SHUTDOWN
+        function shutdownPC() {
+            document.getElementById('startMenu').style.display = 'none';
+            document.getElementById('eghWindow').style.display = 'none';
+            document.getElementById('recycleWindow').style.display = 'none';
+            document.getElementById('computerWindow').style.display = 'none';
+            document.getElementById('noteWindow').style.display = 'none';
+            document.getElementById('timerWindow').style.display = 'none';
+            document.getElementById('desktop').style.display = 'none';
+            
+            // Alle dynamischen Fenster schließen
+            const container = document.getElementById('dynamicWindowsContainer');
+            container.innerHTML = '';
+            windowCount = 0;
+            
+            document.getElementById('taskbarEghItem').classList.remove('highlight');
+            document.getElementById('taskbarRecycleItem').classList.remove('highlight');
+            document.getElementById('taskbarComputerItem').classList.remove('highlight');
+            
+            document.getElementById('shutdownScreen').style.display = 'flex';
+            
+            let progress = 0;
+            const bar = document.getElementById('shutdownBar');
+            const dots = document.getElementById('shutdownDots');
+            
+            const shutdownInterval = setInterval(() => {
+                progress += 2;
+                bar.style.width = progress + '%';
+                
+                if (progress % 20 === 0) {
+                    dots.innerText = '.'.repeat((progress / 20) % 4);
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(shutdownInterval);
+                    
+                    setTimeout(() => {
+                        window.close();
+                        document.body.innerHTML = '<div style="background:black; color:#0f0; height:100vh; display:flex; align-items:center; justify-content:center; font-family:monospace; font-size:24px;">✅ Computer kann ausgeschaltet werden</div>';
+                    }, 500);
+                }
+            }, 50);
+            
+            clearInterval(timerInterval);
+            addHistory('System heruntergefahren', 'system');
+        }
+
+        // FOLDER RENDER
+        function renderFolders() {
+            const grid = document.getElementById('folderGrid');
+            grid.innerHTML = '';
+            
+            const totalFiles = Object.values(folderContents).reduce((acc, files) => acc + files.length, 0);
+            document.getElementById('totalFiles').innerText = totalFiles;
+            document.getElementById('totalFolders').innerText = folders.length;
+            document.getElementById('totalFolders2').innerText = folders.length;
+            
+            folders.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'folder-item';
+                div.setAttribute('data-folder', f.name);
+                
+                if (openedFolders[f.name]) {
+                    div.classList.add('unlocked');
+                } else {
+                    div.classList.add('locked');
+                }
+                
+                div.innerHTML = `
+                    <div class="folder-icon">📂</div>
+                    <div class="folder-name">${f.name}</div>
+                    <div class="${openedFolders[f.name] ? 'unlock-icon' : 'lock-icon'}">${openedFolders[f.name] ? '🔓 GEÖFFNET' : '🔒 EINMAL-CODE'}</div>
+                    <div style="font-size:11px; margin-top:5px;">${f.files} · ${f.type}</div>
+                    ${openedFolders[f.name] ? '<div style="color:#ffff00; font-size:10px;">⚡ ZUGRIFF GEWÄHRT</div>' : ''}
+                `;
+                
+                div.onclick = (e) => {
+                    e.stopPropagation();
+                    openModal(f.name);
+                };
+                
+                div.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    showContextMenu(e, 'folder', f.name);
+                    return false;
+                };
+                
+                grid.appendChild(div);
+            });
+            
+            updateLockedCount();
+        }
+
+        // MODAL
+        const modal = document.getElementById('passwordModal');
+        const overlay = document.getElementById('overlay');
+        const selectedSpan = document.getElementById('selectedFolderName');
+        const pwdInput = document.getElementById('passwordInput');
+        const errorMsg = document.getElementById('errorMsg');
+        let currentFolder = '';
+
+        function openModal(name) {
+            currentFolder = name;
+            selectedSpan.innerText = name;
+            pwdInput.value = '';
+            errorMsg.innerHTML = '';
+            
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+            pwdInput.focus();
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+            currentFolder = '';
+        }
+
+        function tryUnlock() {
+            if (!currentFolder) return;
+            
+            const entered = pwdInput.value.trim().toUpperCase();
+            
+            // Prüfe ob Admin-Code eingegeben wurde
+            if (entered === ADMIN_CODE) {
+                openedFolders[currentFolder] = true;
+                
+                if (folderContents[currentFolder]) {
+                    openFolderContentWindow(currentFolder, folderContents[currentFolder]);
+                }
+                
+                // Update UI
+                document.querySelectorAll('.folder-item').forEach(item => {
+                    if (item.getAttribute('data-folder') === currentFolder) {
+                        item.classList.remove('locked');
+                        item.classList.add('unlocked');
+                        const lockDiv = item.querySelector('.lock-icon, .unlock-icon');
+                        if (lockDiv) {
+                            lockDiv.className = 'unlock-icon';
+                            lockDiv.innerHTML = '🔓 ADMIN';
+                        }
+                        
+                        const oldLabel = item.querySelector('div[style*="color:#ffff00"]');
+                        if (!oldLabel) {
+                            const newLabel = document.createElement('div');
+                            newLabel.style.color = '#ffff00';
+                            newLabel.style.fontSize = '10px';
+                            newLabel.style.fontWeight = 'bold';
+                            newLabel.innerText = '⚡ BILL-CIPHER ⚡';
+                            item.appendChild(newLabel);
+                        }
+                    }
+                });
+                
+                updateLockedCount();
+                errorMsg.innerHTML = '<div style="background:#ffff00; color:#000; padding:10px; text-align:center; font-weight:bold;">✅ ADMIN-ZUGRIFF GEWÄHRT! (BILL-CIPHER)</div>';
+                
+                addHistory(`ADMIN-Zugriff auf Ordner: ${currentFolder}`, 'admin');
+                
+                setTimeout(closeModal, 1500);
+                return;
+            }
+            
+            // Normaler Code-Check
+            const correct = folderCodes[currentFolder];
+            
+            if (entered === correct) {
+                openedFolders[currentFolder] = true;
+                
+                // NEUEN CODE GENERIEREN
+                folderCodes[currentFolder] = generateRandomCode();
+                
+                if (folderContents[currentFolder]) {
+                    openFolderContentWindow(currentFolder, folderContents[currentFolder]);
+                }
+                
+                // Update UI
+                document.querySelectorAll('.folder-item').forEach(item => {
+                    if (item.getAttribute('data-folder') === currentFolder) {
+                        item.classList.remove('locked');
+                        item.classList.add('unlocked');
+                        const lockDiv = item.querySelector('.lock-icon, .unlock-icon');
+                        if (lockDiv) {
+                            lockDiv.className = 'unlock-icon';
+                            lockDiv.innerHTML = '🔓 GEÖFFNET';
+                        }
+                        
+                        const oldLabel = item.querySelector('div[style*="color:#ff8800"]');
+                        if (oldLabel) oldLabel.remove();
+                        const newLabel = document.createElement('div');
+                        newLabel.style.color = '#ffff00';
+                        newLabel.style.fontSize = '10px';
+                        newLabel.innerText = '⚡ NEUER CODE GENERIERT';
+                        item.appendChild(newLabel);
+                    }
+                });
+                
+                updateLockedCount();
+                errorMsg.innerHTML = '<div style="background:#0f0; color:#000; padding:10px; text-align:center;">✅ Zugriff gewährt! (Neuer Code wurde generiert)</div>';
+                
+                addHistory(`Ordner geöffnet: ${currentFolder} mit Code: ${entered}`, 'unlock');
+                
+                setTimeout(closeModal, 1500);
+            } else {
+                errorMsg.innerHTML = '<div class="used-msg">❌ Falscher Code</div>';
+                pwdInput.value = '';
+                addHistory(`Falscher Code-Versuch für: ${currentFolder}`, 'error');
+            }
+        }
+
+        function updateLockedCount() {
+            const unopenedCount = folders.filter(f => !openedFolders[f.name]).length;
+            document.getElementById('lockedCount').innerText = unopenedCount;
+        }
+
+        // CONTEXT MENU
+        function showContextMenu(event, type, name) {
+            event.preventDefault();
+            const menu = document.getElementById('contextMenu');
+            currentContextItem = { type, name };
+            
+            menu.style.display = 'block';
+            menu.style.left = event.clientX + 'px';
+            menu.style.top = event.clientY + 'px';
+        }
+
+        function contextMenuAction(action) {
+            const menu = document.getElementById('contextMenu');
+            menu.style.display = 'none';
+            
+            if (!currentContextItem) return;
+            
+            if (action === 'open') {
+                if (currentContextItem.type === 'folder') {
+                    openModal(currentContextItem.name);
+                }
+            } else if (action === 'properties') {
+                if (currentContextItem.type === 'folder') {
+                    const folder = folders.find(f => f.name === currentContextItem.name);
+                    if (folder) {
+                        alert(`📁 ${folder.name}\n📄 Dateien: ${folder.files}\n🔒 Typ: ${folder.type}\n🔐 Geöffnet: ${openedFolders[folder.name] ? 'Ja' : 'Nein'}`);
+                    }
+                }
+            } else if (action === 'copy') {
+                alert(`"${currentContextItem.name}" wurde in die Zwischenablage kopiert (simuliert).`);
+            } else if (action === 'delete') {
+                alert(`"${currentContextItem.name}" kann nicht gelöscht werden. Zugriff verweigert.`);
+            }
+        }
+
+        // EVENT LISTENERS
+        document.getElementById('cancelBtn').onclick = closeModal;
+        overlay.onclick = closeModal;
+        document.getElementById('unlockBtn').onclick = (e) => {
+            e.preventDefault();
+            tryUnlock();
+        };
+        pwdInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                tryUnlock();
+            }
+        });
+
+        // Fenster verschiebbar machen
+        function makeDraggable(titleId, windowId) {
+            let isDragging = false;
+            let offsetX, offsetY;
+            
+            const title = document.getElementById(titleId);
+            const win = document.getElementById(windowId);
+            
+            if (!title || !win) return;
+            
+            title.addEventListener('mousedown', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                isDragging = true;
+                offsetX = e.clientX - win.offsetLeft;
+                offsetY = e.clientY - win.offsetTop;
+                win.style.zIndex = 9000 + Math.floor(Math.random() * 1000);
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    win.style.left = (e.clientX - offsetX) + 'px';
+                    win.style.top = (e.clientY - offsetY) + 'px';
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        }
+
+        makeDraggable('recycleTitle', 'recycleWindow');
+        makeDraggable('computerTitle', 'computerWindow');
+        makeDraggable('noteTitle', 'noteWindow');
+    </script>
+</body>
+</html>
